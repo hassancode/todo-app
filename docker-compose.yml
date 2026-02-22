@@ -1,0 +1,32 @@
+services:
+  todo-progress-api:
+    image: todo-progress-api:latest
+    ports:
+      - "8001:8001"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+  todo-api:
+    image: todo-api:latest
+    ports:
+      - "8000:8000"
+    depends_on:
+      todo-progress-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+
+  frontend:
+    image: todo-frontend:latest
+    ports:
+      - "3000:80"
+    depends_on:
+      - todo-api
