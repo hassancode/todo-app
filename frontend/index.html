@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Todo App</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Todo App</h1>
+  </header>
+
+  <main>
+    <section id="add-task">
+      <h2>Add Task</h2>
+      <form id="task-form">
+        <input type="text" id="title" placeholder="Task title" required />
+        <input type="text" id="description" placeholder="Description (optional)" />
+        <button type="submit">Add Task</button>
+      </form>
+    </section>
+
+    <section id="tasks-section">
+      <h2>Tasks</h2>
+      <div id="error-message" class="error hidden"></div>
+      <ul id="task-list"></ul>
+    </section>
+  </main>
+
+  <!-- Progress History Modal -->
+  <div id="progress-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Progress History</h2>
+        <button id="modal-close">&times;</button>
+      </div>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
