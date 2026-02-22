@@ -17,7 +17,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Copy source and install the project into the virtualenv
 COPY src/ src/
-COPY pyproject.toml uv.lock ./
+COPY pyproject.toml uv.lock README.md ./
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev
 
