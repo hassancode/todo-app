@@ -1,5 +1,5 @@
-const API_BASE = 'http://localhost:8000';
-const PROGRESS_BASE = 'http://localhost:8001';
+const API_BASE = '/api';
+const PROGRESS_BASE = '/progress';
 
 // ── DOM refs ──────────────────────────────────────────────
 const taskForm   = document.getElementById('task-form');

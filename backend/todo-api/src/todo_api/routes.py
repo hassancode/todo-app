@@ -11,14 +11,14 @@ from . import storage
 router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 
-@router.post("/", response_model=Task, status_code=201)
+@router.post("", response_model=Task, status_code=201)
 async def create_task(data: TaskCreate) -> Task:
     task = storage.create_task(data)
     await record_event(task.id, "created", None, task.status.value)
     return task
 
 
-@router.get("/", response_model=list[Task])
+@router.get("", response_model=list[Task])
 async def list_tasks() -> list[Task]:
     return storage.list_tasks()
 

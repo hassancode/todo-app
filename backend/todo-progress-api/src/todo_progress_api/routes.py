@@ -10,12 +10,12 @@ from . import storage
 router = APIRouter(prefix="/progress", tags=["progress"])
 
 
-@router.post("/", response_model=ProgressEvent, status_code=201)
+@router.post("", response_model=ProgressEvent, status_code=201)
 async def record_event(data: ProgressEventCreate) -> ProgressEvent:
     return storage.record_event(data)
 
 
-@router.get("/", response_model=list[ProgressEvent])
+@router.get("", response_model=list[ProgressEvent])
 async def list_events() -> list[ProgressEvent]:
     return storage.list_events()
 

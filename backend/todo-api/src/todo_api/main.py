@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from .routes import router
 
-app = FastAPI(title="Todo API")
+app = FastAPI(title="Todo API", redirect_slashes=False)
 
 app.add_middleware(
     CORSMiddleware,
