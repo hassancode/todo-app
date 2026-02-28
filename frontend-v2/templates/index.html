@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Todo App — Tasks{% endblock %}
+
+{% block content %}
+<section>
+  <h2>New Task</h2>
+  <form action="/tasks" method="post" id="task-form">
+    <input type="text" name="title" placeholder="Title" required />
+    <input type="text" name="description" placeholder="Description (optional)" />
+    <button type="submit">Add Task</button>
+  </form>
+</section>
+
+<section>
+  <h2>Tasks</h2>
+
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  {% if tasks %}
+    <ul id="task-list">
+      {% for task in tasks %}
+      <li class="task-card">
+        <div class="task-info">
+          <div class="task-title">{{ task.title }}</div>
+          {% if task.description %}
+            <div class="task-description">{{ task.description }}</div>
+          {% endif %}
+          <div class="task-meta">
+            <span class="status-badge status-{{ task.status }}">{{ task.status | replace("_", " ") }}</span>
+            &nbsp;· Created {{ task.created_at[:10] }}
+          </div>
+        </div>
+        <div class="task-actions">
+          {% if task.status == "pending" %}
+            <form action="/tasks/{{ task.id }}/status" method="post">
+              <input type="hidden" name="status" value="in_progress" />
+              <button type="submit" class="btn-start">Start</button>
+            </form>
+          {% elif task.status == "in_progress" %}
+            <form action="/tasks/{{ task.id }}/status" method="post">
+              <input type="hidden" name="status" value="completed" />
+              <button type="submit" class="btn-complete">Complete</button>
+            </form>
+          {% endif %}
+
+          <a href="/tasks/{{ task.id }}/history">
+            <button type="button" class="btn-history">History</button>
+          </a>
+
+          <form action="/tasks/{{ task.id }}/delete" method="post">
+            <button type="submit" class="btn-delete">Delete</button>
+          </form>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p style="color:#6b7280;font-size:0.875rem;">No tasks yet. Create one above.</p>
+  {% endif %}
+</section>
+{% endblock %}

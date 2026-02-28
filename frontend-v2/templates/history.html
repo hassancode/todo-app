@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Task History{% endblock %}
+
+{% block content %}
+<section>
+  <h2>Task History</h2>
+  <p class="task-meta" style="margin-bottom:1rem;">Task ID: {{ task_id }}</p>
+
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  {% if events %}
+    {% for event in events %}
+    <div class="event-item">
+      <div class="event-type">{{ event.event_type }}</div>
+      <div class="event-details">
+        {% if event.old_status and event.new_status %}
+          {{ event.old_status | replace("_", " ") }} &rarr; {{ event.new_status | replace("_", " ") }}
+        {% elif event.new_status %}
+          &rarr; {{ event.new_status | replace("_", " ") }}
+        {% elif event.old_status %}
+          {{ event.old_status | replace("_", " ") }} &rarr;
+        {% else %}
+          &mdash;
+        {% endif %}
+      </div>
+      <div class="event-time">{{ event.timestamp[:19] | replace("T", " ") }}</div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p class="no-events">No events recorded for this task.</p>
+  {% endif %}
+
+  <p style="margin-top:1.5rem;">
+    <a href="/" style="color:#4f46e5;">&larr; Back to tasks</a>
+  </p>
+</section>
+{% endblock %}
