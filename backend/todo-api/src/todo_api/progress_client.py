@@ -24,6 +24,6 @@ async def record_event(
     }
     try:
         async with httpx.AsyncClient() as client:
-            await client.post(f"{PROGRESS_API_URL}/progress/", json=payload, timeout=5.0)
+            await client.post(f"{PROGRESS_API_URL}/progress", json=payload, timeout=5.0)
     except httpx.HTTPError as exc:
         logger.warning("Failed to record progress event: %s", exc)
