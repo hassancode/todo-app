@@ -1,30 +1,10 @@
-# =============================================================================
-# Stage 1: Builder — validate and stage static assets
-# =============================================================================
-FROM alpine:3.21 AS builder
+FROM nginx:alpine-slim@sha256:a716a2895ddba4fa7fca05e1003579f76d3d304932781426a211bc72b51f0c4e
 
-WORKDIR /app
-
-COPY index.html style.css app.js ./
-
-# =============================================================================
-# Stage 2: Runtime — nginx serves static files
-# =============================================================================
-FROM nginx:1.27-alpine AS runtime
-
-# Remove default content and config
-RUN rm -rf /usr/share/nginx/html/* /etc/nginx/conf.d/default.conf
-
-COPY --from=builder /app /usr/share/nginx/html
+# Copy static assets and custom nginx config
+COPY index.html app.js style.css /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Run as non-root: nginx master stays root to bind port 80,
-# but worker processes drop to the unprivileged nginx user (built-in).
-# For full non-root, use port 8080 and USER nginx — kept at 80 for simplicity.
 
 EXPOSE 80
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD wget -qO- http://localhost/health || exit 1
-
-CMD ["nginx", "-g", "daemon off;"]
+    CMD nc -zw1 localhost 80 || exit 1

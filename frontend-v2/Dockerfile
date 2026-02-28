@@ -1,46 +1,27 @@
-# =============================================================================
-# Stage 1: Builder — install dependencies and build the project
-# =============================================================================
-FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim AS builder
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim@sha256:531f855bda2c73cd6ef67d56b733b357cea384185b3022bd09f05e002cd144ca
+
+# Create non-root user
+RUN groupadd --gid 1001 appgroup && \
+    useradd --uid 1001 --gid 1001 --no-create-home --shell /bin/false appuser
 
 WORKDIR /app
 
-ENV UV_COMPILE_BYTECODE=1 \
-    UV_LINK_MODE=copy
-
-RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --frozen --no-dev --no-install-project
-
-COPY src/ src/
+# Install dependencies first for layer caching
 COPY pyproject.toml uv.lock README.md ./
-RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --frozen --no-dev
+RUN uv sync --frozen --no-dev --no-install-project
 
-# =============================================================================
-# Stage 2: Runtime — lean image with no build tooling
-# =============================================================================
-FROM python:3.11-slim-bookworm AS runtime
+# Copy source and runtime assets, then install project
+COPY src/ ./src/
+COPY templates/ ./templates/
+COPY static/ ./static/
+RUN uv sync --frozen --no-dev && \
+    chown -R appuser:appgroup /app
 
-RUN groupadd -r app && useradd -r -g app -d /app -s /sbin/nologin app
-
-WORKDIR /app
-
-COPY --from=builder --chown=app:app /app/.venv    /app/.venv
-COPY --from=builder --chown=app:app /app/src      /app/src
-COPY --chown=app:app templates/                   /app/templates/
-COPY --chown=app:app static/                      /app/static/
-
-USER app
-
-ENV PATH="/app/.venv/bin:$PATH" \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+USER appuser
 
 EXPOSE 3001
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:3001/health')"
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:3001/health')" || exit 1
 
-CMD ["uvicorn", "todo_frontend.main:app", "--host", "0.0.0.0", "--port", "3001", "--workers", "2"]
+CMD [".venv/bin/uvicorn", "todo_frontend.main:app", "--host", "0.0.0.0", "--port", "3001", "--workers", "1"]
