@@ -13,9 +13,6 @@ build/
 venv/
 env/
 
-# uv
-uv.lock
-
 # Editor
 .DS_Store
 .idea/

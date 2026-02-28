@@ -30,3 +30,14 @@ services:
       - "3000:80"
     depends_on:
       - todo-api
+
+  frontend-v2:
+    image: todo-frontend-v2:latest
+    ports:
+      - "3001:3001"
+    environment:
+      TODO_API_URL: http://todo-api:8000
+      PROGRESS_API_URL: http://todo-progress-api:8001
+    depends_on:
+      todo-api:
+        condition: service_healthy

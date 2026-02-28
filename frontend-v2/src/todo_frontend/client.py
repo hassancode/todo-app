@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import os
+
 import httpx
 
-TODO_API = "http://localhost:8000"
-PROGRESS_API = "http://localhost:8001"
+TODO_API = os.getenv("TODO_API_URL", "http://localhost:8000")
+PROGRESS_API = os.getenv("PROGRESS_API_URL", "http://localhost:8001")
 TIMEOUT = 5.0
 
 
