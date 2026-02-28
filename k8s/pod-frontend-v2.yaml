@@ -9,14 +9,14 @@ spec:
     - name: frontend-v2
       image: todo-frontend-v2:latest
       imagePullPolicy: Never
-      command: ["uvicorn", "todo_frontend.main:app", "--host", "0.0.0.0", "--port", "3001", "--workers", "1"]
+      command: [".venv/bin/uvicorn", "todo_frontend.main:app", "--host", "0.0.0.0", "--port", "3001", "--workers", "1"]
       ports:
         - containerPort: 3001
       env:
         - name: TODO_API_URL
-          value: "http://10.1.0.22:8000"
+          value: "http://10.1.0.28:8000"
         - name: PROGRESS_API_URL
-          value: "http://10.1.0.21:8001"
+          value: "http://10.1.0.27:8001"
       readinessProbe:
         httpGet:
           path: /health

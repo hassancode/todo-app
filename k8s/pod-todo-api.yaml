@@ -9,12 +9,12 @@ spec:
     - name: todo-api
       image: todo-api:latest
       imagePullPolicy: Never
-      command: ["uvicorn", "todo_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+      command: [".venv/bin/uvicorn", "todo_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
       ports:
         - containerPort: 8000
       env:
         - name: PROGRESS_API_URL
-          value: "http://todo-progress-api:8001"
+          value: "http://10.1.0.27:8001"
       readinessProbe:
         httpGet:
           path: /health

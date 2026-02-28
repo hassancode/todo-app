@@ -5,6 +5,13 @@ metadata:
   labels:
     app: frontend
 spec:
+  hostAliases:
+    - ip: "10.1.0.28"
+      hostnames:
+        - "todo-api"
+    - ip: "10.1.0.27"
+      hostnames:
+        - "todo-progress-api"
   containers:
     - name: frontend
       image: todo-frontend:latest
