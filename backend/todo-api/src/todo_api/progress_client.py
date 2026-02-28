@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import logging
+import os
 from uuid import UUID
 
 import httpx
 
-PROGRESS_API_URL = "http://127.0.0.1:8001"
+PROGRESS_API_URL = os.getenv("PROGRESS_API_URL", "http://127.0.0.1:8001")
 
 logger = logging.getLogger(__name__)
 

@@ -1,6 +1,7 @@
 services:
   todo-progress-api:
     image: todo-progress-api:latest
+    command: ["uvicorn", "todo_progress_api.main:app", "--host", "0.0.0.0", "--port", "8001", "--workers", "1"]
     ports:
       - "8001:8001"
     healthcheck:
@@ -12,6 +13,9 @@ services:
 
   todo-api:
     image: todo-api:latest
+    command: ["uvicorn", "todo_api.main:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "1"]
+    environment:
+      PROGRESS_API_URL: http://todo-progress-api:8001
     ports:
       - "8000:8000"
     depends_on:
